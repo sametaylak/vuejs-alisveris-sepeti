@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vue JS Alışveriş Sepeti Uygulaması</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+    crossorigin="anonymous"> </head>
+
+<body>
+    <div class="container" id="cart">
+        <h3 class="page-header">Vue JS <small>Alışveriş Sepeti</small></h3>
+        <div class="row">
+            <div class="col-md-8">
+                <h4>Ürünler</h4>
+                <div class="col-sm-6 col-md-4" v-for="product in products">
+                    <div class="thumbnail">
+                        <img src="{{ product.img }}">
+                        <div class="caption">
+                            <h3>{{ product.name }}</h3>
+                            <p>{{ product.desc }}</p>
+                            <p>{{ product.price }} TL</p>
+                            <p><a href="#ekle" class="btn btn-primary" role="button" v-on:click="addProduct(product)">Sepete Ekle</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h4>Sepet <span v-if="myProducts.length != 0">- {{ myProducts.length }} - Toplam {{ productTotal }} TL</span></h4>
+                <ul>
+                    <li v-for="product in myProducts" style="padding:5px">
+                        {{ product.name }} - {{ product.qty }}
+                        <span class="btn btn-xs btn-danger" v-on:click="removeProduct(product)">{X}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="vue.min.js"></script>
+    <script>
+        var examp = new Vue({
+             el: '#cart', // Uygulamamızın kapsayacağı div'i seçtik
+             data: { // Uygulamamızda kullanacağımız değişkenleri tanımladık
+                 myProducts: [], // Sepetimiz ( Şu an boş )
+                 products: [
+                     { // Dummy datalarımızı oluşturduk test amaçlı
+                         id: 0,
+                         name: "Ürün 1", // Ürünün Adı
+                         desc: "Açıklama", // Ürünün Açıklaması
+                         img: "default.png", // Ürünün Fotoğrafı
+                         price: 20 // Ürününü Fiyatı
+                     },
+                     {
+                         id: 1,
+                         name: "Ürün 2",
+                         desc: "Açıklama",
+                         img: "default.png",
+                         price: 40
+                     },
+                     {
+                         id: 2,
+                         name: "Ürün 3",
+                         desc: "Açıklama",
+                         img: "default.png",
+                         price: 60
+                     },
+                     {
+                         id: 3,
+                         name: "Ürün 4",
+                         desc: "Açıklama",
+                         img: "default.png",
+                         price: 80
+                     },
+                     {
+                         id: 4,
+                         name: "Ürün 5",
+                         desc: "Açıklama",
+                         img: "default.png",
+                         price: 60
+                     },
+                     {
+                         id: 5,
+                         name: "Ürün 6",
+                         desc: "Açıklama",
+                         img: "default.png",
+                         price: 80
+                     },
+                 ]
+             },
+             computed: {
+                productTotal: function() {     
+                    var total = 0;
+                    var item;
+                    
+                    for(item in this.myProducts){
+                        total = total + (this.myProducts[item].qty * this.myProducts[item].price);
+                    }
+                    
+                    return total;
+                }
+            },
+            methods: { // Uygulamamızda kullanacağımız methodları tanımladık
+                 addProduct: function(item) {
+                     if(this.myProducts.length == 0){
+                        this.myProducts.push({
+                            id: item.id,
+                            name: item.name,
+                            desc: item.desc,
+                            price: item.price,
+                            qty: 1
+                        });
+                     } else {
+                         var repeatItem = false;
+                         var pItem;
+                         
+                         for(pItem in this.myProducts){
+                             if(this.myProducts[pItem].id == item.id){
+                                 this.myProducts[pItem].qty = this.myProducts[pItem].qty + 1;
+                                 repeatItem = true;
+                             }
+                         }
+                         
+                         if(!repeatItem){
+                            this.myProducts.push({
+                                id: item.id,
+                                name: item.name,
+                                desc: item.desc,
+                                price: item.price,
+                                qty: 1
+                            });
+                         }
+                     }
+                 },
+                 removeProduct: function(item) {
+                     this.myProducts.$remove(item);
+                 }
+             }
+         })
+    </script>
+</body>
+
+</html>
